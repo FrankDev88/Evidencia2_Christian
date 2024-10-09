@@ -532,7 +532,7 @@ def menu():
         #MENU INFORMES
         elif opcion == '4':
             while True:                        
-                sub_opcion = input("Bienvendio al menu de reportes selecciona una opción: \n1. Reporte Clientes \n 2. Prestamos por retornar \n3. Prestamos por periodo \n4. Salir")
+                sub_opcion = input("Bienvendio al menu de reportes selecciona una opción: \n1. Reporte Clientes \n2. Prestamos por retornar \n3. Prestamos por periodo \n4. Salir\n")
                 if sub_opcion == '1':
                     reportes_clientes()
                 elif sub_opcion == '2':
@@ -541,7 +541,7 @@ def menu():
                     reportes_prestamos_periodo()
                 elif sub_opcion == '4':
                     break
-                        
+              
                 else:
                     print("Opción no válida. Inténtalo de nuevo.")
        

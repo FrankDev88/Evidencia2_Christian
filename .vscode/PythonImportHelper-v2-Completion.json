@@ -1,0 +1,396 @@
+[
+    {
+        "label": "random",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "random",
+        "description": "random",
+        "detail": "random",
+        "documentation": {}
+    },
+    {
+        "label": "datetime",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "datetime",
+        "description": "datetime",
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "datetime",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "datetime",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "csv",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "csv",
+        "description": "csv",
+        "detail": "csv",
+        "documentation": {}
+    },
+    {
+        "label": "os",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "os",
+        "description": "os",
+        "detail": "os",
+        "documentation": {}
+    },
+    {
+        "label": "re",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "re",
+        "description": "re",
+        "detail": "re",
+        "documentation": {}
+    },
+    {
+        "label": "statistics",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "statistics",
+        "description": "statistics",
+        "detail": "statistics",
+        "documentation": {}
+    },
+    {
+        "label": "pandas",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "pandas",
+        "description": "pandas",
+        "detail": "pandas",
+        "documentation": {}
+    },
+    {
+        "label": "Dataframes",
+        "kind": 6,
+        "importPath": "ev1",
+        "description": "ev1",
+        "peekOfCode": "class Dataframes:\n    df_unidad= pd.DataFrame(base_de_datos[\"unidad\"]).T\n    df_cliente= pd.DataFrame(base_de_datos[\"cliente\"]).T\n    df_prestamos= pd.DataFrame(base_de_datos[\"prestamo\"]).T  \n    def actualizar(self):\n        self.df_unidad= pd.DataFrame(base_de_datos[\"unidad\"]).T\n        self.df_cliente= pd.DataFrame(base_de_datos[\"cliente\"]).T\n        self.df_prestamos= pd.DataFrame(base_de_datos[\"prestamo\"]).T \n#instanciamos la clase data frames para manejar la bd como un data frame\ndf_db=Dataframes()",
+        "detail": "ev1",
+        "documentation": {}
+    },
+    {
+        "label": "validate_positive_integer",
+        "kind": 2,
+        "importPath": "ev1",
+        "description": "ev1",
+        "peekOfCode": "def validate_positive_integer(value, field_name):\n    try:\n        value = int(value)\n        if value <= 0:\n            raise ValueError(f\"{field_name} debe ser un número entero mayor a cero.\")\n        return value\n    except ValueError as e:\n        raise ValueError(f\"{field_name} debe ser un número entero válido.\") from e\n# Función para validar el formato de fecha mm-dd-aaaa\ndef validate_date_format(date_str, field_name):",
+        "detail": "ev1",
+        "documentation": {}
+    },
+    {
+        "label": "validate_date_format",
+        "kind": 2,
+        "importPath": "ev1",
+        "description": "ev1",
+        "peekOfCode": "def validate_date_format(date_str, field_name):\n    try:\n        datetime.strptime(date_str, FORMAT_DATE)\n        return date_str\n    except ValueError:\n        raise ValueError(f\"{field_name} debe tener el formato mm/dd/aaaa.\")\n# Solicitar y validar el folio\ndef prestamo():\n    if len(df_db.df_cliente)==0:\n        print(\"actualmente no hay clientes regresando a la ventana anterior que tenga buen dia!\")",
+        "detail": "ev1",
+        "documentation": {}
+    },
+    {
+        "label": "prestamo",
+        "kind": 2,
+        "importPath": "ev1",
+        "description": "ev1",
+        "peekOfCode": "def prestamo():\n    if len(df_db.df_cliente)==0:\n        print(\"actualmente no hay clientes regresando a la ventana anterior que tenga buen dia!\")\n        return 0\n    if len(df_db.df_unidad)==0:\n        print(\"actualmente no hay unidades a la ventana anterior que tenga buen dia!\")\n        return 0\n    # Solicitar y validar la clave de la unidad\n    while True:\n        try:",
+        "detail": "ev1",
+        "documentation": {}
+    },
+    {
+        "label": "generar_clave",
+        "kind": 2,
+        "importPath": "ev1",
+        "description": "ev1",
+        "peekOfCode": "def generar_clave():\n    return random.randint(1, 10000)\ndef validar_telefono(telefono):\n    # Verifica si el teléfono tiene 10 dígitos y es numérico\n    return telefono.isdigit() and len(telefono) == 10\n#Logica de Registro de cliente\ndef registro_cliente():\n    print(\"\\n--- Registro de Cliente ---\")\n    #Generación de clave\n    clave = len(base_de_datos[\"cliente\"]) + 1",
+        "detail": "ev1",
+        "documentation": {}
+    },
+    {
+        "label": "validar_telefono",
+        "kind": 2,
+        "importPath": "ev1",
+        "description": "ev1",
+        "peekOfCode": "def validar_telefono(telefono):\n    # Verifica si el teléfono tiene 10 dígitos y es numérico\n    return telefono.isdigit() and len(telefono) == 10\n#Logica de Registro de cliente\ndef registro_cliente():\n    print(\"\\n--- Registro de Cliente ---\")\n    #Generación de clave\n    clave = len(base_de_datos[\"cliente\"]) + 1\n    print(f\"Clave generada: {clave}\")\n    # Solicitar apellidos",
+        "detail": "ev1",
+        "documentation": {}
+    },
+    {
+        "label": "registro_cliente",
+        "kind": 2,
+        "importPath": "ev1",
+        "description": "ev1",
+        "peekOfCode": "def registro_cliente():\n    print(\"\\n--- Registro de Cliente ---\")\n    #Generación de clave\n    clave = len(base_de_datos[\"cliente\"]) + 1\n    print(f\"Clave generada: {clave}\")\n    # Solicitar apellidos\n    apellidos = \"\"\n    while not apellidos or len(apellidos) > 40:\n        apellidos = input(\"Ingresa los apellidos (máximo 40 caracteres): \")\n        if len(apellidos) > 40:",
+        "detail": "ev1",
+        "documentation": {}
+    },
+    {
+        "label": "registro_unidad",
+        "kind": 2,
+        "importPath": "ev1",
+        "description": "ev1",
+        "peekOfCode": "def registro_unidad():\n    print(\"\\n--- Registro de Unidad ---\")\n    #Esto mide la logitud de nuestra base de datos en unidad y le suma 1 esto genera una clave unica e irrepetible\n    clave = len(base_de_datos[\"unidad\"]) + 1\n    print(f\"Clave generada: {clave}\") \n    #Selección de rodada\n    rodada = None\n    while rodada not in [20, 26, 29]:\n        try:\n            rodada = int(input(\"Selecciona la rodada (20, 26, 29): \"))",
+        "detail": "ev1",
+        "documentation": {}
+    },
+    {
+        "label": "retorno",
+        "kind": 2,
+        "importPath": "ev1",
+        "description": "ev1",
+        "peekOfCode": "def retorno():\n    #Cargamos nuestros datos en un df para tener un mejor manejo de nuestros datos\n    #Prestamos por retornar\n    df_prestamos=df_db.df_prestamos\n    pxretornar=df_prestamos[df_prestamos[4]==\"N/E\"]\n    if len(pxretornar)==0:\n        print(\"actualmente no hay pretsamos pendientes regresando a la ventana anterior que tenga buen dia!\")\n        return 0\n    #vamos a mostrarle al usuario cuales son los pedidos que estan por retornar y su detalle\n    for folio,row in pxretornar.iterrows():",
+        "detail": "ev1",
+        "documentation": {}
+    },
+    {
+        "label": "reportes_clientes",
+        "kind": 2,
+        "importPath": "ev1",
+        "description": "ev1",
+        "peekOfCode": "def reportes_clientes():\n    print(\"\\n--- Reporte de Clientes ---\")\n    #RECORREMOS TODA LA BASE DE DATOS EN LA TABLA CLIENTES PARA MOSTRAR ABSOLUTAMENTE TODOS LOS CLIENTES \n    for cliente_id,cliente_datos in base_de_datos[\"cliente\"].items():\n        print(cliente_id,cliente_datos)\n    while True:\n        #ESTE TRAMO DE CODIGO SOLO VALIDA LA VERACIDAD DE LA OPCION OSEA QUE SEA 1 O 2\n        try:\n            opcion=int(input(\"¿Quieres Exportar? \\n1:Si \\n 2: No\\n\"))\n            if opcion not in [1,2]:",
+        "detail": "ev1",
+        "documentation": {}
+    },
+    {
+        "label": "reportes_prestamos_retorno",
+        "kind": 2,
+        "importPath": "ev1",
+        "description": "ev1",
+        "peekOfCode": "def reportes_prestamos_retorno():\n    print(\"\\n--- Reporte de Préstamos por Retornar ---\")\n    while True:\n        #VERIFICAR QUE LAS FECHAS SON CORRECTAS\n        try:\n            fecha_1_str = input(f\"Ingrese la primer fecha ({FORMAT_DATE}): \")\n            fecha_2_str = input(f\"Ingrese la segunda fecha ({FORMAT_DATE}): \")\n            # Convertir las fechas a objetos datetime\n            fecha_1 = datetime.strptime(fecha_1_str, FORMAT_DATE)\n            fecha_2 = datetime.strptime(fecha_2_str, FORMAT_DATE)",
+        "detail": "ev1",
+        "documentation": {}
+    },
+    {
+        "label": "reportes_prestamos_periodo",
+        "kind": 2,
+        "importPath": "ev1",
+        "description": "ev1",
+        "peekOfCode": "def reportes_prestamos_periodo():\n    print(\"\\n--- Reporte de Préstamos por Periodo ---\")\n    while True:\n        #VERIFICAR QUE LAS FECHAS SON CORRECTAS \n        try:\n            \"\"\"\n            ESTE TRAMO DE CODIGO RECIVE DOS FECHAS Y ASIGNA LA FECHA FIN COMO LA MAYOR Y LA INICIO \n            \"\"\"\n            fecha_1_str = input(f\"Ingrese la primer fecha ({FORMAT_DATE}): \")\n            fecha_2_str = input(f\"Ingrese la segunda fecha ({FORMAT_DATE}): \")",
+        "detail": "ev1",
+        "documentation": {}
+    },
+    {
+        "label": "salir",
+        "kind": 2,
+        "importPath": "ev1",
+        "description": "ev1",
+        "peekOfCode": "def salir():\n    print(\"\\nSaliendo del sistema. ¡Hasta luego!\")\n# Menús\ndef main_menu():\n    print(\"\\n--- Menú Principal ---\")\n    print(\"1. Registro\")\n    print(\"2. Préstamo\")\n    print(\"3. Retorno\")\n    print(\"4. REPORTES\")\n    print(\"5. Salir\")",
+        "detail": "ev1",
+        "documentation": {}
+    },
+    {
+        "label": "main_menu",
+        "kind": 2,
+        "importPath": "ev1",
+        "description": "ev1",
+        "peekOfCode": "def main_menu():\n    print(\"\\n--- Menú Principal ---\")\n    print(\"1. Registro\")\n    print(\"2. Préstamo\")\n    print(\"3. Retorno\")\n    print(\"4. REPORTES\")\n    print(\"5. Salir\")\ndef registro_menu():\n    print(\"\\n--- Registro ---\")\n    print(\"1. Unidad\")",
+        "detail": "ev1",
+        "documentation": {}
+    },
+    {
+        "label": "registro_menu",
+        "kind": 2,
+        "importPath": "ev1",
+        "description": "ev1",
+        "peekOfCode": "def registro_menu():\n    print(\"\\n--- Registro ---\")\n    print(\"1. Unidad\")\n    print(\"2. Cliente\")\n    print(\"3. Volver al Menú Principal\")\n# Función principal\ndef menu():\n    while True:\n        main_menu()\n        opcion = input(\"Selecciona una opción:\")",
+        "detail": "ev1",
+        "documentation": {}
+    },
+    {
+        "label": "menu",
+        "kind": 2,
+        "importPath": "ev1",
+        "description": "ev1",
+        "peekOfCode": "def menu():\n    while True:\n        main_menu()\n        opcion = input(\"Selecciona una opción:\")\n        #ES IMPORTANTE CARGAR LOS DATA FRAMES AQUI YA QUE CUALQUIER ACTUALIZACION QUE HAGA EL USUARIO DURANTE LA EJECUCION SE VERA REFLEJADA EN LOS REPORTES Y ANALISIS GRACIAS A ESTAS LINEAS\n        df_db.actualizar()\n        #Menu de Registros\n        if opcion == '1':\n            while True:\n                registro_menu()",
+        "detail": "ev1",
+        "documentation": {}
+    },
+    {
+        "label": "base_de_datos",
+        "kind": 5,
+        "importPath": "ev1",
+        "description": "ev1",
+        "peekOfCode": "base_de_datos = {\n    \"cliente\": {},\n    \"unidad\": {},\n    \"prestamo\": {}\n}\n#CREAMOS UNA CLASE PARA MANEJAR NUESTROS DATAFRAMES\nclass Dataframes:\n    df_unidad= pd.DataFrame(base_de_datos[\"unidad\"]).T\n    df_cliente= pd.DataFrame(base_de_datos[\"cliente\"]).T\n    df_prestamos= pd.DataFrame(base_de_datos[\"prestamo\"]).T  ",
+        "detail": "ev1",
+        "documentation": {}
+    },
+    {
+        "label": "Dataframes",
+        "kind": 6,
+        "importPath": "ev2_0_1",
+        "description": "ev2_0_1",
+        "peekOfCode": "class Dataframes:\n    df_unidad= pd.DataFrame(base_de_datos[\"unidad\"]).T\n    df_cliente= pd.DataFrame(base_de_datos[\"cliente\"]).T\n    df_prestamos= pd.DataFrame(base_de_datos[\"prestamo\"]).T  \n    def actualizar(self):\n        self.df_unidad= pd.DataFrame(base_de_datos[\"unidad\"]).T\n        self.df_cliente= pd.DataFrame(base_de_datos[\"cliente\"]).T\n        self.df_prestamos= pd.DataFrame(base_de_datos[\"prestamo\"]).T \n#instanciamos la clase data frames para manejar la bd como un data frame\ndf_db=Dataframes()",
+        "detail": "ev2_0_1",
+        "documentation": {}
+    },
+    {
+        "label": "validate_positive_integer",
+        "kind": 2,
+        "importPath": "ev2_0_1",
+        "description": "ev2_0_1",
+        "peekOfCode": "def validate_positive_integer(value, field_name):\n    try:\n        value = int(value)\n        if value <= 0:\n            raise ValueError(f\"{field_name} debe ser un número entero mayor a cero.\")\n        return value\n    except ValueError as e:\n        raise ValueError(f\"{field_name} debe ser un número entero válido.\") from e\n# Función para validar el formato de fecha mm-dd-aaaa\ndef validate_date_format(date_str, field_name):",
+        "detail": "ev2_0_1",
+        "documentation": {}
+    },
+    {
+        "label": "validate_date_format",
+        "kind": 2,
+        "importPath": "ev2_0_1",
+        "description": "ev2_0_1",
+        "peekOfCode": "def validate_date_format(date_str, field_name):\n    try:\n        datetime.strptime(date_str, FORMAT_DATE)\n        return date_str\n    except ValueError:\n        raise ValueError(f\"{field_name} debe tener el formato mm/dd/aaaa.\")\n# Solicitar y validar el folio\ndef prestamo():\n    if len(df_db.df_cliente)==0:\n        print(\"actualmente no existen clientes regresando a la ventana anterior que tenga buen dia!\")",
+        "detail": "ev2_0_1",
+        "documentation": {}
+    },
+    {
+        "label": "prestamo",
+        "kind": 2,
+        "importPath": "ev2_0_1",
+        "description": "ev2_0_1",
+        "peekOfCode": "def prestamo():\n    if len(df_db.df_cliente)==0:\n        print(\"actualmente no existen clientes regresando a la ventana anterior que tenga buen dia!\")\n        return 0\n    if len(df_db.df_unidad)==0:\n        print(\"actualmente no hay unidades existentes regresando a la ventana anterior que tenga buen dia!\")\n        return 0\n    if len(df_db.df_unidad[df_db.df_unidad[2]==False])==0:\n        print(\"actualmente no hay unidades dispoibles regresando a la ventana anterior que tenga buen dia!\")\n        return 0",
+        "detail": "ev2_0_1",
+        "documentation": {}
+    },
+    {
+        "label": "generar_clave",
+        "kind": 2,
+        "importPath": "ev2_0_1",
+        "description": "ev2_0_1",
+        "peekOfCode": "def generar_clave():\n    return random.randint(1, 10000)\ndef validar_telefono(telefono):\n    # Verifica si el teléfono tiene 10 dígitos y es numérico\n    return telefono.isdigit() and len(telefono) == 10\n#Logica de Registro de cliente\ndef registro_cliente():\n    print(\"\\n--- Registro de Cliente ---\")\n    #Generación de clave\n    clave = len(base_de_datos[\"cliente\"]) + 1",
+        "detail": "ev2_0_1",
+        "documentation": {}
+    },
+    {
+        "label": "validar_telefono",
+        "kind": 2,
+        "importPath": "ev2_0_1",
+        "description": "ev2_0_1",
+        "peekOfCode": "def validar_telefono(telefono):\n    # Verifica si el teléfono tiene 10 dígitos y es numérico\n    return telefono.isdigit() and len(telefono) == 10\n#Logica de Registro de cliente\ndef registro_cliente():\n    print(\"\\n--- Registro de Cliente ---\")\n    #Generación de clave\n    clave = len(base_de_datos[\"cliente\"]) + 1\n    print(f\"Clave generada: {clave}\")\n    # Solicitar apellidos",
+        "detail": "ev2_0_1",
+        "documentation": {}
+    },
+    {
+        "label": "registro_cliente",
+        "kind": 2,
+        "importPath": "ev2_0_1",
+        "description": "ev2_0_1",
+        "peekOfCode": "def registro_cliente():\n    print(\"\\n--- Registro de Cliente ---\")\n    #Generación de clave\n    clave = len(base_de_datos[\"cliente\"]) + 1\n    print(f\"Clave generada: {clave}\")\n    # Solicitar apellidos\n    apellidos = \"\"\n    while not apellidos or len(apellidos) > 40:\n        apellidos = input(\"Ingresa los apellidos (máximo 40 caracteres): \")\n        if len(apellidos) > 40:",
+        "detail": "ev2_0_1",
+        "documentation": {}
+    },
+    {
+        "label": "registro_unidad",
+        "kind": 2,
+        "importPath": "ev2_0_1",
+        "description": "ev2_0_1",
+        "peekOfCode": "def registro_unidad():\n    print(\"\\n--- Registro de Unidad ---\")\n    #Esto mide la logitud de nuestra base de datos en unidad y le suma 1 esto genera una clave unica e irrepetible\n    clave = len(base_de_datos[\"unidad\"]) + 1\n    print(f\"Clave generada: {clave}\") \n    #Selección de rodada\n    rodada = None\n    while rodada not in [20, 26, 29]:\n        try:\n            rodada = int(input(\"Selecciona la rodada (20, 26, 29): \"))",
+        "detail": "ev2_0_1",
+        "documentation": {}
+    },
+    {
+        "label": "retorno",
+        "kind": 2,
+        "importPath": "ev2_0_1",
+        "description": "ev2_0_1",
+        "peekOfCode": "def retorno():\n    #Cargamos nuestros datos en un df para tener un mejor manejo de nuestros datos\n    #Prestamos por retornar\n    df_prestamos=df_db.df_prestamos\n    pxretornar=df_prestamos[df_prestamos[4]==\"N/E\"]\n    if len(pxretornar)==0:\n        print(\"actualmente no hay pretsamos pendientes regresando a la ventana anterior que tenga buen dia!\")\n        return 0\n    #vamos a mostrarle al usuario cuales son los pedidos que estan por retornar y su detalle\n    for folio,row in pxretornar.iterrows():",
+        "detail": "ev2_0_1",
+        "documentation": {}
+    },
+    {
+        "label": "reportes_clientes",
+        "kind": 2,
+        "importPath": "ev2_0_1",
+        "description": "ev2_0_1",
+        "peekOfCode": "def reportes_clientes():\n    print(\"\\n--- Reporte de Clientes ---\")\n    #RECORREMOS TODA LA BASE DE DATOS EN LA TABLA CLIENTES PARA MOSTRAR ABSOLUTAMENTE TODOS LOS CLIENTES \n    for cliente_id,cliente_datos in base_de_datos[\"cliente\"].items():\n        print(cliente_id,cliente_datos)\n    while True:\n        #ESTE TRAMO DE CODIGO SOLO VALIDA LA VERACIDAD DE LA OPCION OSEA QUE SEA 1 O 2\n        try:\n            opcion=int(input(\"¿Quieres Exportar? \\n1:Si \\n 2: No\\n\"))\n            if opcion not in [1,2]:",
+        "detail": "ev2_0_1",
+        "documentation": {}
+    },
+    {
+        "label": "reportes_prestamos_retorno",
+        "kind": 2,
+        "importPath": "ev2_0_1",
+        "description": "ev2_0_1",
+        "peekOfCode": "def reportes_prestamos_retorno():\n    print(\"\\n--- Reporte de Préstamos por Retornar ---\")\n    while True:\n        #VERIFICAR QUE LAS FECHAS SON CORRECTAS\n        try:\n            fecha_1_str = input(f\"Ingrese la primer fecha ({FORMAT_DATE}): \")\n            fecha_2_str = input(f\"Ingrese la segunda fecha ({FORMAT_DATE}): \")\n            # Convertir las fechas a objetos datetime\n            fecha_1 = datetime.strptime(fecha_1_str, FORMAT_DATE)\n            fecha_2 = datetime.strptime(fecha_2_str, FORMAT_DATE)",
+        "detail": "ev2_0_1",
+        "documentation": {}
+    },
+    {
+        "label": "reportes_prestamos_periodo",
+        "kind": 2,
+        "importPath": "ev2_0_1",
+        "description": "ev2_0_1",
+        "peekOfCode": "def reportes_prestamos_periodo():\n    print(\"\\n--- Reporte de Préstamos por Periodo ---\")\n    while True:\n        #VERIFICAR QUE LAS FECHAS SON CORRECTAS \n        try:\n            \"\"\"\n            ESTE TRAMO DE CODIGO RECIVE DOS FECHAS Y ASIGNA LA FECHA FIN COMO LA MAYOR Y LA INICIO \n            \"\"\"\n            fecha_1_str = input(f\"Ingrese la primer fecha ({FORMAT_DATE}): \")\n            fecha_2_str = input(f\"Ingrese la segunda fecha ({FORMAT_DATE}): \")",
+        "detail": "ev2_0_1",
+        "documentation": {}
+    },
+    {
+        "label": "salir",
+        "kind": 2,
+        "importPath": "ev2_0_1",
+        "description": "ev2_0_1",
+        "peekOfCode": "def salir():\n    print(\"\\nSaliendo del sistema. ¡Hasta luego!\")\n# Menús\ndef main_menu():\n    print(\"\\n--- Menú Principal ---\")\n    print(\"1. Registro\")\n    print(\"2. Préstamo\")\n    print(\"3. Retorno\")\n    print(\"4. Informes\")\n    print(\"5. Salir\")",
+        "detail": "ev2_0_1",
+        "documentation": {}
+    },
+    {
+        "label": "main_menu",
+        "kind": 2,
+        "importPath": "ev2_0_1",
+        "description": "ev2_0_1",
+        "peekOfCode": "def main_menu():\n    print(\"\\n--- Menú Principal ---\")\n    print(\"1. Registro\")\n    print(\"2. Préstamo\")\n    print(\"3. Retorno\")\n    print(\"4. Informes\")\n    print(\"5. Salir\")\ndef registro_menu():\n    print(\"\\n--- Registro ---\")\n    print(\"1. Unidad\")",
+        "detail": "ev2_0_1",
+        "documentation": {}
+    },
+    {
+        "label": "registro_menu",
+        "kind": 2,
+        "importPath": "ev2_0_1",
+        "description": "ev2_0_1",
+        "peekOfCode": "def registro_menu():\n    print(\"\\n--- Registro ---\")\n    print(\"1. Unidad\")\n    print(\"2. Cliente\")\n    print(\"3. Volver al Menú Principal\")\ndef reportes_menu():\n    print(\"\\n--- Reportes ---\")\n    print(\"1. Clientes\")\n    print(\"2. Préstamos por Retornar\")\n    print(\"3. Préstamos por Período\")",
+        "detail": "ev2_0_1",
+        "documentation": {}
+    },
+    {
+        "label": "reportes_menu",
+        "kind": 2,
+        "importPath": "ev2_0_1",
+        "description": "ev2_0_1",
+        "peekOfCode": "def reportes_menu():\n    print(\"\\n--- Reportes ---\")\n    print(\"1. Clientes\")\n    print(\"2. Préstamos por Retornar\")\n    print(\"3. Préstamos por Período\")\n    print(\"4. Volver al Menú Principal\")\n    print(\"5. Retrasos\")\n    print(\"6. Listado de unidades\")\n# Función principal\ndef menu():",
+        "detail": "ev2_0_1",
+        "documentation": {}
+    },
+    {
+        "label": "menu",
+        "kind": 2,
+        "importPath": "ev2_0_1",
+        "description": "ev2_0_1",
+        "peekOfCode": "def menu():\n    while True:\n        main_menu()\n        opcion = input(\"Selecciona una opción:\")\n        #ES IMPORTANTE CARGAR LOS DATA FRAMES AQUI YA QUE CUALQUIER ACTUALIZACION QUE HAGA EL USUARIO DURANTE LA EJECUCION SE VERA REFLEJADA EN LOS REPORTES Y ANALISIS GRACIAS A ESTAS LINEAS\n        df_db.actualizar()\n        #Menu de Registros\n        if opcion == '1':\n            while True:\n                registro_menu()",
+        "detail": "ev2_0_1",
+        "documentation": {}
+    },
+    {
+        "label": "base_de_datos",
+        "kind": 5,
+        "importPath": "ev2_0_1",
+        "description": "ev2_0_1",
+        "peekOfCode": "base_de_datos = {\n    \"cliente\": {},\n    \"unidad\": {},\n    \"prestamo\": {}\n}\n#CREAMOS UNA CLASE PARA MANEJAR NUESTROS DATAFRAMES\nclass Dataframes:\n    df_unidad= pd.DataFrame(base_de_datos[\"unidad\"]).T\n    df_cliente= pd.DataFrame(base_de_datos[\"cliente\"]).T\n    df_prestamos= pd.DataFrame(base_de_datos[\"prestamo\"]).T  ",
+        "detail": "ev2_0_1",
+        "documentation": {}
+    }
+]

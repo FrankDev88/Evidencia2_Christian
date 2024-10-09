@@ -103,11 +103,15 @@ def validate_date_format(date_str, field_name):
 def prestamo():
    
     if len(df_db.df_cliente)==0:
-        print("actualmente no hay clientes regresando a la ventana anterior que tenga buen dia!")
+        print("actualmente no existen clientes regresando a la ventana anterior que tenga buen dia!")
         return 0
    
     if len(df_db.df_unidad)==0:
-        print("actualmente no hay unidades a la ventana anterior que tenga buen dia!")
+        print("actualmente no hay unidades existentes regresando a la ventana anterior que tenga buen dia!")
+        return 0
+    
+    if len(df_db.df_unidad[df_db.df_unidad[2]==False])==0:
+        print("actualmente no hay unidades dispoibles regresando a la ventana anterior que tenga buen dia!")
         return 0
    
     # Solicitar y validar la clave de la unidad
