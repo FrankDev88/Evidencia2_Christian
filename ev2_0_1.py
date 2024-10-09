@@ -347,38 +347,31 @@ def retorno():
     base_de_datos["unidad"][int(base_de_datos["prestamo"][folio][1])][2]=False
     print(f"EL CLIENTE CON CLAVE: {c_cliente}\n DEVOLVIO LA UNIDAD CON CLAVE: {c_unidad}\n")
 
-
-def reportes_clientes():
-    print("\n--- Reporte de Clientes ---")
-    #RECORREMOS TODA LA BASE DE DATOS EN LA TABLA CLIENTES PARA MOSTRAR ABSOLUTAMENTE TODOS LOS CLIENTES 
-
-    for cliente_id,cliente_datos in base_de_datos["cliente"].items():
-        print(cliente_id,cliente_datos)
+def exportardf(df,nombre_exportacion):
     while True:
         #ESTE TRAMO DE CODIGO SOLO VALIDA LA VERACIDAD DE LA OPCION OSEA QUE SEA 1 O 2
         try:
-            opcion=int(input("¿Quieres Exportar? \n1:Si \n 2: No\n"))
+            opcion=int(input("¿Quieres Exportar? \n1:Si \n2:No\n"))
             if opcion not in [1,2]:
                 print("Esta opcion no esta disponible:",opcion)
                 raise Exception
             break
         except Exception as e:
-            print("La ocpion digitada no es valida")      
-    if opcion==1:
-        #INICIALISAMOS EL ARCHIVO CSV
-        with open('reporte_clientes.csv', 'w', newline='') as file:
-            #ESTE SERA EL ESCRTOR DEL ARCHIVO
-            writer = csv.writer(file)
-            #DEFINIMOS LOS ENCABEZADOS
-            writer.writerow(["ID", "Apellido", "Nombre", "Teléfono"])  # Encabezado
+            print("La ocpion digitada no es valida")   
 
-            for id, data in base_de_datos["cliente"].items():
-                #Y ESCRIBIMOS LAS COLUMNAS DEL REPORTE EN BASE A LO QUE TENEMOS EN CLIENTES EN NUESTRA BASE DE DATOS
-                writer.writerow([id] + data)
-            print("EL ARCHIVO SE EXPORTO CORRECTAMENTE")
+    if opcion==1:
+        df.to_csv(nombre_exportacion,index=False)
         pass
     else:
         print("Perfecto que tenga un buen dia")
+
+def reportes_clientes():
+    print("\n--- Reporte de Clientes ---")
+    #RECORREMOS TODA LA BASE DE DATOS EN LA TABLA CLIENTES PARA MOSTRAR ABSOLUTAMENTE TODOS LOS CLIENTES 
+    todos_clientes=df_db.df_cliente
+    print(todos_clientes)
+    exportardf(todos_clientes,"REPORTE_CLIENTES.csv")
+
 
 def reportes_prestamos_retorno():
     print("\n--- Reporte de Préstamos por Retornar ---")
@@ -401,39 +394,16 @@ def reportes_prestamos_retorno():
             break
         except Exception as e:
             print("Las fecha proporcionada no coinciden con lo solicitado por favor digite la fecha MM/DD/YYYY")
-        
-        
-        
-    for key,value in base_de_datos["prestamo"].items():
-       fecha_folio=datetime.strptime(value[2], FORMAT_DATE)
-       if fecha_inicio <= fecha_folio and fecha_fin >= fecha_folio:
-            if value[4] == "N/E":
-                print(key,value)
+    #CONVERTIR LA COLUMNA FECHA A FECHAS
+    df_db.df_prestamos["Fecha"] = df_db.df_prestamos['Fecha'].apply(lambda value: datetime.strptime(value, FORMAT_DATE))
+    #FILTRAR LAS QUE ESTAN POR RETORNAR
+    filtro = (fecha_inicio <= df_db.df_prestamos['Fecha']) & (fecha_fin >= df_db.df_prestamos['Fecha'])
+    df_filtrado=df_db.df_prestamos[filtro] 
+    #QUE ESTEN EN N/E
+    df_xretornar=df_filtrado[df_filtrado["Estado"]=="N/E"]
+    print(df_xretornar)
+    exportardf(df_xretornar,"REPORTE_X_RETORNAR.csv")
 
-
-    while True:
-        try:
-            opcion=int(input("¿Quieres Exportar? \n1:Si \n 2: No\n"))
-            if opcion not in [1,2]:
-                print("esta opcion no esta disponible")
-                raise Exception
-            break
-        except Exception as e:
-            print("La ocpion digitada no es valida")
-    
-    if opcion==1:
-        with open('retornar_reporte.csv', 'w', newline='') as file:
-            writer = csv.writer(file)
-            writer.writerow(["ID", "Cliente_ID", "Unidad_ID", "Fecha", "Cantidad", "Observaciones"])  # Encabezado
-            for id, data in base_de_datos["prestamo"].items():
-                fecha_folio=datetime.strptime(data[2], FORMAT_DATE)
-                if fecha_inicio <= fecha_folio and fecha_fin >= fecha_folio:
-                    if data[4] == "N/E":
-                        writer.writerow([id] + data)
-        print("EL ARCHIVO SE EXPORTO CORRECTAMENTE")
-
-    else:
-        print("Perfecto que tenga un buen dia")
 
 def reportes_prestamos_periodo():
     print("\n--- Reporte de Préstamos por Periodo ---")
@@ -459,33 +429,13 @@ def reportes_prestamos_periodo():
             break
         except Exception as e:
             print("Las fecha proporcionada no coinciden con lo solicitado por favor digite la fecha MM/DD/YYYY")
-        
-    for key,value in base_de_datos["prestamo"].items():
-       fecha_folio=datetime.strptime(value[2], FORMAT_DATE)
-       if fecha_inicio <= fecha_folio and fecha_fin >= fecha_folio:
-            print(key,value)
-
-    while True:
-        #ESTE TRAMO DE CODIGO SOLO VALIDA LA VERACIDAD DE LA OPCION OSEA QUE SEA 1 O 2
-        try:
-            opcion=int(input("¿Quieres Exportar? \n1:Si \n 2: No\n"))
-            if opcion not in [1,2]:
-                print("Esta opcion no esta disponible:",opcion)
-                raise Exception
-            break
-        except Exception as e:
-            print("La ocpion digitada no es valida")   
-    if opcion==1:
-        with open('retornar_periodo.csv', 'w', newline='') as file:
-            writer = csv.writer(file)
-            writer.writerow(["ID", "Cliente_ID", "Unidad_ID", "Fecha", "Cantidad", "Observaciones"])  # Encabezado
-            for id, data in base_de_datos["prestamo"].items():
-                fecha_folio=datetime.strptime(data[2], FORMAT_DATE)
-                if fecha_inicio <= fecha_folio and fecha_fin >= fecha_folio:
-                    writer.writerow([id] + data)
-        print("EL ARCHIVO SE EXPORTO CORRECTAMENTE")
-    else:
-        print("Perfecto que tenga un buen dia")
+    #CONVERTIR LA COLUMNA FECHA A FECHAS
+    df_db.df_prestamos["Fecha"] = df_db.df_prestamos['Fecha'].apply(lambda value: datetime.strptime(value, FORMAT_DATE))
+    #FILTRAR LAS QUE ESTAN POR RETORNAR
+    filtro = (fecha_inicio <= df_db.df_prestamos['Fecha']) & (fecha_fin >= df_db.df_prestamos['Fecha'])
+    df_filtrado=df_db.df_prestamos[filtro] 
+    print(df_filtrado)
+    exportardf(df_filtrado,"REPORTE_X_PERIODO.csv")    
 
     
 def salir():
@@ -518,6 +468,7 @@ def reportes_menu():
     print("6. Listado de unidades")
 
 def retrasos():
+
     pass
 
 def listado_unidades():
@@ -529,10 +480,11 @@ def menu():
     while True:
         main_menu()
         opcion = input("Selecciona una opción:")
-        #ES IMPORTANTE CARGAR LOS DATA FRAMES AQUI YA QUE CUALQUIER ACTUALIZACION QUE HAGA EL USUARIO DURANTE LA EJECUCION SE VERA REFLEJADA EN LOS REPORTES Y ANALISIS GRACIAS A ESTAS LINEAS
+        """
+        ES IMPORTANTE CARGAR LOS DATA FRAMES AQUI YA QUE CUALQUIER ACTUALIZACION QUE HAGA EL USUARIO DURANTE LA EJECUCION SE VERA REFLEJADA EN LOS REPORTES Y ANALISIS GRACIAS A ESTAS LINEAS
+        """
         df_db.actualizar()
-        #Menu de Registros
-
+        #MENU DE REGISTROS
         if opcion == '1':
             while True:
                 registro_menu()
@@ -549,18 +501,16 @@ def menu():
                 #Caso contrario indicar al usuario que la opcion es invalida
                 else:
                     print("Opción no válida. Inténtalo de nuevo.")
-        
         #MENU DE PRESTAMO
         elif opcion == '2':
             prestamo()
         #MENU DE RETORNO
         elif opcion == '3':
             retorno()
-
         #MENU INFORMES
         elif opcion == '4':
             while True:
-                opcion=input("A QUE SUB MENU DESEA IR:\n1:Reportes\n2:Analisis\n3:Volver al menu principal")
+                opcion=input("A QUE SUB MENU DESEA IR:\n1:Reportes\n2:Analisis\n3:Volver al menu principal\n")
                 #MENU DE REPORTES
                 if opcion =="1":
                     while True:
@@ -591,7 +541,7 @@ def menu():
                     break
                 else:
                     print("esa opcion no esta disponible")
-       
+
         #ESCAPE DEL SISTEMA
         elif opcion == '5':
             salir()
