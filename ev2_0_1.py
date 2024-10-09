@@ -17,20 +17,6 @@ base_de_datos = {
     "prestamo": {}
 }
 
-#CREAMOS UNA CLASE PARA MANEJAR NUESTROS DATAFRAMES
-class Dataframes:
-    df_unidad= pd.DataFrame(base_de_datos["unidad"]).T
-    df_cliente= pd.DataFrame(base_de_datos["cliente"]).T
-    df_prestamos= pd.DataFrame(base_de_datos["prestamo"]).T  
-
-    def actualizar(self):
-        self.df_unidad= pd.DataFrame(base_de_datos["unidad"]).T
-        self.df_cliente= pd.DataFrame(base_de_datos["cliente"]).T
-        self.df_prestamos= pd.DataFrame(base_de_datos["prestamo"]).T 
-
-#instanciamos la clase data frames para manejar la bd como un data frame
-df_db=Dataframes()
-
 # Importar la tabla "cliente"
 try:
     if os.path.exists('cliente.csv'):
@@ -77,6 +63,28 @@ try:
 except Exception as e:
     print(f"Error al leer prestamo.csv: {e}")
 
+
+#CREAMOS UNA CLASE PARA MANEJAR NUESTROS DATAFRAMES
+class Dataframes:
+    df_unidad= pd.DataFrame(base_de_datos["unidad"]).T
+    df_cliente= pd.DataFrame(base_de_datos["cliente"]).T
+    df_prestamos= pd.DataFrame(base_de_datos["prestamo"]).T
+    df_unidad.columns=["Rodada","Color","Prestado"] 
+    df_cliente.columns=["Apellido","Nombre","Telefono"] 
+    df_prestamos.columns=["ID_cliente","ID_unidad","Fecha","Dias C","Estado"] 
+
+
+    def actualizar(self):
+        self.df_unidad= pd.DataFrame(base_de_datos["unidad"]).T
+        self.df_cliente= pd.DataFrame(base_de_datos["cliente"]).T
+        self.df_prestamos= pd.DataFrame(base_de_datos["prestamo"]).T 
+        self.df_unidad.columns=["Rodada","Color","Prestado"] 
+        self.df_cliente.columns=["Apellido","Nombre","Telefono"] 
+        self.df_prestamos.columns=["ID_cliente","ID_unidad","Fecha","Dias C","Estado"] 
+
+#instanciamos la clase data frames para manejar la bd como un data frame
+
+df_db=Dataframes()
 from datetime import datetime
 
 
@@ -101,7 +109,7 @@ def validate_date_format(date_str, field_name):
 
 # Solicitar y validar el folio
 def prestamo():
-   
+   #REQUISITOS PARA QUE SE PUEDA ACCEDER AL MENU DE PRESTAMOS
     if len(df_db.df_cliente)==0:
         print("actualmente no existen clientes regresando a la ventana anterior que tenga buen dia!")
         return 0
@@ -110,7 +118,7 @@ def prestamo():
         print("actualmente no hay unidades existentes regresando a la ventana anterior que tenga buen dia!")
         return 0
     
-    if len(df_db.df_unidad[df_db.df_unidad[2]==False])==0:
+    if len(df_db.df_unidad[df_db.df_unidad["Prestado"]==False])==0:
         print("actualmente no hay unidades dispoibles regresando a la ventana anterior que tenga buen dia!")
         return 0
    
@@ -298,7 +306,7 @@ def retorno():
     #Cargamos nuestros datos en un df para tener un mejor manejo de nuestros datos
     #Prestamos por retornar
     df_prestamos=df_db.df_prestamos
-    pxretornar=df_prestamos[df_prestamos[4]=="N/E"]
+    pxretornar=df_prestamos[df_prestamos["Estado"]=="N/E"]
 
     if len(pxretornar)==0:
         print("actualmente no hay pretsamos pendientes regresando a la ventana anterior que tenga buen dia!")
@@ -509,6 +517,13 @@ def reportes_menu():
     print("5. Retrasos")
     print("6. Listado de unidades")
 
+def retrasos():
+    pass
+
+def listado_unidades():
+    pass
+
+
 # Función principal
 def menu():
     while True:
@@ -517,6 +532,7 @@ def menu():
         #ES IMPORTANTE CARGAR LOS DATA FRAMES AQUI YA QUE CUALQUIER ACTUALIZACION QUE HAGA EL USUARIO DURANTE LA EJECUCION SE VERA REFLEJADA EN LOS REPORTES Y ANALISIS GRACIAS A ESTAS LINEAS
         df_db.actualizar()
         #Menu de Registros
+
         if opcion == '1':
             while True:
                 registro_menu()
@@ -560,6 +576,7 @@ def menu():
                             break
                         #Retrasos
                         elif sub_opcion == '5':
+
                             break
                         #Listado de unidades
                         elif sub_opcion == '6':
@@ -579,10 +596,6 @@ def menu():
         elif opcion == '5':
             salir()
             break
-        
-        #MENU DE ANALISIS
-        elif opcion == "6":
-            pass
         else:
             print("Opción no válida. Inténtalo de nuevo.")
 
