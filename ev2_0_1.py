@@ -7,6 +7,14 @@ import re
 import statistics
 import pandas as pd
 
+
+def limpiar_pantalla():
+    # Verifica el sistema operativo
+    if os.name == 'nt':  # Para Windows
+        os.system('cls')
+    else:  # Para Linux/MacOS
+        os.system('clear')
+
 #Fecha en constante para poder realizar cambios en caso de ser requerido
 FORMAT_DATE="%m/%d/%Y"
 
@@ -348,6 +356,10 @@ def retorno():
     print(f"EL CLIENTE CON CLAVE: {c_cliente}\n DEVOLVIO LA UNIDAD CON CLAVE: {c_unidad}\n")
 
 def exportardf(df,nombre_exportacion):
+    if len(df)==0:
+        limpiar_pantalla()
+        print("POR AHORA NO HAY NINGUN REGISTRO EN EL REPORTE CON LAS CONDICIONES QUE USTED PROPORCIONA MUCHAS GRACIAS QUE TENGA UN BUEN DIA!")
+        return 0
     while True:
         #ESTE TRAMO DE CODIGO SOLO VALIDA LA VERACIDAD DE LA OPCION OSEA QUE SEA 1 O 2
         try:
@@ -401,8 +413,18 @@ def reportes_prestamos_retorno():
     df_filtrado=df_db.df_prestamos[filtro] 
     #QUE ESTEN EN N/E
     df_xretornar=df_filtrado[df_filtrado["Estado"]=="N/E"]
-    print(df_xretornar)
-    exportardf(df_xretornar,"REPORTE_X_RETORNAR.csv")
+
+    #HACEMOS LOS TPOS DE DATOS COMPATIBLES PARA EL MERGE
+    df_xretornar["ID_unidad"] = df_xretornar["ID_unidad"].astype(int)
+    df_xretornar["ID_cliente"] = df_xretornar["ID_cliente"].astype(int)
+    #HACEMOS LOS INNER JOINS
+    df_resultado = pd.merge(df_xretornar, df_db.df_unidad, left_on="ID_unidad", right_index=True)
+    df_resultado = pd.merge(df_resultado, df_db.df_cliente, left_on="ID_cliente", right_index=True)
+
+    # Seleccionar las columnas necesarias para el reporte
+    df_reporte = df_resultado[["ID_unidad", "Rodada", "Fecha", "Nombre", "Apellido", "Telefono"]]
+    print(df_reporte)
+    exportardf(df_reporte,"REPORTE_X_RETORNAR.csv")
 
 
 def reportes_prestamos_periodo():
@@ -433,9 +455,17 @@ def reportes_prestamos_periodo():
     df_db.df_prestamos["Fecha"] = df_db.df_prestamos['Fecha'].apply(lambda value: datetime.strptime(value, FORMAT_DATE))
     #FILTRAR LAS QUE ESTAN POR RETORNAR
     filtro = (fecha_inicio <= df_db.df_prestamos['Fecha']) & (fecha_fin >= df_db.df_prestamos['Fecha'])
+
+
     df_filtrado=df_db.df_prestamos[filtro] 
-    print(df_filtrado)
-    exportardf(df_filtrado,"REPORTE_X_PERIODO.csv")    
+    df_filtrado["ID_unidad"] = df_filtrado["ID_unidad"].astype(int)
+    df_filtrado["ID_cliente"] = df_filtrado["ID_cliente"].astype(int)
+    #HACEMOS LOS INNER JOINS
+    df_resultado = pd.merge(df_filtrado, df_db.df_unidad, left_on="ID_unidad", right_index=True)
+    df_resultado = pd.merge(df_resultado, df_db.df_cliente, left_on="ID_cliente", right_index=True)
+    df_reporte = df_resultado[["ID_unidad", "Rodada", "Fecha", "Nombre", "Apellido", "Telefono"]]
+    print(df_reporte)
+    exportardf(df_reporte,"REPORTE_X_PERIODO.csv")    
 
     
 def salir():
@@ -467,12 +497,201 @@ def reportes_menu():
     print("5. Retrasos")
     print("6. Listado de unidades")
 
-def retrasos():
 
-    pass
 
-def listado_unidades():
-    pass
+def listado_unidades_completo():
+    print("\n--- Listado de Unidades Completo ---")
+
+    # Mostrar todas las unidades con sus atributos
+    df_reporte = df_db.df_unidad
+    print(df_reporte)
+    
+    # Exportar el reporte
+    exportardf(df_reporte, "LISTADO_UNIDADES_COMPLETO.csv")
+
+
+def listado_unidades_por_rodada():
+    print("\n--- Listado de Unidades por Rodada ---")
+
+    while True:
+        try:
+            # Solicitar la rodada al usuario
+            rodada = int(input("Ingrese la rodada deseada: "))
+            break
+        except Exception as e:
+            print("Rodada no válida, intente nuevamente.")
+
+
+    # Filtrar unidades por rodada
+    df_filtrado = df_db.df_unidad[df_db.df_unidad["Rodada"] == rodada]
+
+    # Mostrar solo la clave y el color
+    df_reporte = df_filtrado[["Rodada", "Color"]]
+    print(df_reporte)
+
+    # Exportar el reporte
+    exportardf(df_reporte, f"LISTADO_UNIDADES_RODADA_{rodada}.csv")
+
+
+def listado_unidades_por_color():
+    print("\n--- Listado de Unidades por Color ---")
+
+    while True:
+        try:
+            # Solicitar el color al usuario
+            color = input("Ingrese el color deseado: ")
+            break
+        except Exception as e:
+            print("Color no válido, intente nuevamente.")
+
+
+    # Filtrar unidades por color
+    df_filtrado = df_db.df_unidad[df_db.df_unidad["Color"] == color]
+
+    # Mostrar solo la clave y la rodada
+    df_reporte = df_filtrado[["Rodada", "Color"]]
+    print(df_reporte)
+
+    # Exportar el reporte
+    exportardf(df_reporte, f"LISTADO_UNIDADES_COLOR_{color}.csv")
+
+
+def reporte_retrasos():
+    print("\n--- Reporte de Retrasos ---")
+
+    # Actualizar el DataFrame
+    df_prestamos=df_db.df_prestamos
+
+    # Obtener la fecha actual
+    fecha_actual = pd.to_datetime("today").date()
+
+    try:
+        df_prestamos["Fecha"] = pd.to_datetime(df_prestamos["Fecha"], format=FORMAT_DATE, errors='coerce')
+    except Exception as e:
+        print(f"Error al convertir la columna Fecha a datetime: {e}")
+    #convertir los dias a enteros
+    df_prestamos["Dias C"] = df_prestamos["Dias C"].astype(int)
+    # Calcular la fecha en que se debió retornar la unidad
+    df_prestamos["Fecha Retorno"] = df_prestamos["Fecha"] + pd.to_timedelta(df_prestamos["Dias C"], unit='D')
+
+    # Filtrar préstamos que están retrasados y aún pendientes
+    fecha_actual = pd.to_datetime(fecha_actual)
+    df_retrasos = df_prestamos[(df_prestamos["Fecha Retorno"] < fecha_actual) & (df_prestamos["Estado"] == "N/E")]
+
+    # Calcular los días de retraso
+    df_retrasos["Días de Retraso"] = (fecha_actual - df_retrasos["Fecha Retorno"]).dt.days
+
+    # Unir la información del cliente y la unidad pero primero convertir las llaves a valores compatibles
+    df_retrasos=df_retrasos.astype({
+        "ID_unidad":int,
+        "ID_cliente":int
+    })
+
+    df_resultado = pd.merge(df_retrasos, df_db.df_unidad, left_on="ID_unidad", right_index=True)
+    df_resultado = pd.merge(df_resultado, df_db.df_cliente, left_on="ID_cliente", right_index=True)
+
+    # Seleccionar las columnas necesarias
+    df_reporte = df_resultado[["Días de Retraso", "Fecha Retorno", "ID_unidad", "Rodada", "Color", "Nombre", "Apellido", "Telefono"]]
+
+    # Crear una columna con el nombre completo del cliente
+    df_reporte["Nombre Completo"] = df_reporte["Nombre"] + " " + df_reporte["Apellido"]
+
+    # Ordenar por días de retraso de mayor a menor
+    df_reporte = df_reporte.sort_values(by="Días de Retraso", ascending=False)
+
+    # Mostrar el reporte
+    print(df_reporte)
+
+    # Exportar el reporte
+    exportardf(df_reporte, "REPORTE_RETRASOS.csv")
+
+
+
+
+def reporte_duracion_prestamos():
+    print("\n--- Reporte de Duración de Préstamos ---")
+    # Verifica que los días registrados sean de tipo numérico
+    df_prestamos = df_db.df_prestamos
+    df_prestamos["Dias C"] = pd.to_numeric(df_prestamos["Dias C"], errors='coerce')
+    
+    # Calcula las estadísticas descriptivas
+    estadisticas = df_prestamos["Dias C"].describe(percentiles=[0.25, 0.5, 0.75])
+    
+    # Añade la moda manualmente, ya que describe() no la incluye
+    moda = df_prestamos["Dias C"].mode()[0]
+    
+    # Prepara el reporte con las estadísticas en un DataFrame
+    df_reporte = pd.DataFrame({
+        "Estadística": ["Media", "Mediana", "Moda", "Mínimo", "Máximo", "Desviación estándar", "Primer cuartil", "Tercer cuartil"],
+        "Valor": [
+            estadisticas['mean'],
+            estadisticas['50%'],
+            moda,
+            estadisticas['min'],
+            estadisticas['max'],
+            estadisticas['std'],
+            estadisticas['25%'],
+            estadisticas['75%']
+        ]
+    })
+    
+    # Muestra los resultados
+    print(df_reporte)
+
+    # Exporta el reporte a un archivo CSV
+    exportardf(df_reporte, "REPORTE_DURACION_PRESTAMOS.csv")
+
+
+
+def ranking_clientes():
+    print("\n--- Ranking de Clientes ---")
+    # Agrupar por ID de cliente y contar los préstamos
+    ranking = df_db.df_prestamos.groupby("ID_cliente").size().reset_index(name="Cantidad de Préstamos")
+    
+    # Convertir el ID de cliente a entero para el merge
+    ranking["ID_cliente"] = ranking["ID_cliente"].astype(int)
+    
+    # Realizar el merge con la tabla de clientes
+    ranking_completo = pd.merge(ranking, df_db.df_cliente, left_on="ID_cliente", right_index=True)
+    
+    # Seleccionar las columnas necesarias
+    ranking_completo = ranking_completo[["ID_cliente", "Nombre", "Apellido", "Telefono", "Cantidad de Préstamos"]]
+    
+    # Ordenar de manera descendente por la cantidad de préstamos
+    ranking_completo = ranking_completo.sort_values(by="Cantidad de Préstamos", ascending=False)
+    
+    print(ranking_completo)
+    exportardf(ranking_completo, "RANKING_CLIENTES.csv")
+
+
+def preferencias_rentas_por_rodada():
+    print("\n--- Preferencias de Rentas por Rodada ---")
+    # Agrupar por rodada y contar la cantidad de préstamos
+    preferencias_rodada = df_db.df_prestamos.groupby("Rodada").size().reset_index(name="Cantidad de Préstamos")
+    
+    # Ordenar de manera descendente por la cantidad de préstamos
+    preferencias_rodada = preferencias_rodada.sort_values(by="Cantidad de Préstamos", ascending=False)
+    
+    print(preferencias_rodada)
+    exportardf(preferencias_rodada, "PREFERENCIAS_RENTAS_RODADA.csv")
+
+
+def preferencias_rentas_por_color():
+    print("\n--- Preferencias de Rentas por Color ---")
+    # Agrupar por color y contar la cantidad de préstamos
+    preferencias_color = df_db.df_prestamos.groupby("Color").size().reset_index(name="Cantidad de Préstamos")
+    
+    # Ordenar de manera descendente por la cantidad de préstamos
+    preferencias_color = preferencias_color.sort_values(by="Cantidad de Préstamos", ascending=False)
+    
+    print(preferencias_color)
+    exportardf(preferencias_color, "PREFERENCIAS_RENTAS_COLOR.csv")
+
+
+
+
+
+
 
 
 # Función principal
@@ -526,16 +745,51 @@ def menu():
                             break
                         #Retrasos
                         elif sub_opcion == '5':
-
-                            break
+                            reporte_retrasos()                         
                         #Listado de unidades
                         elif sub_opcion == '6':
-                            break
+                            while True:
+                                listado_opcion=input("Bienvenido al menu de  Reportes Listados a que submenu desea ir?\n1. Listado completo \n2. Listado por rodada \n3. Listado por color\n4. Salir\n")
+                                if listado_opcion=="1":
+                                    listado_unidades_completo()
+                                elif listado_opcion=="2":
+                                    listado_unidades_por_rodada()
+                                elif listado_opcion=="3":
+                                    listado_unidades_por_color()
+                                elif listado_opcion=="4":
+                                    break
+                                else:
+                                    print("Opcion no valida")
                         else:
                             print("Opción no válida. Inténtalo de nuevo.")
                 #MENU DE ANALISIS
                 elif opcion=="2":
-                    pass
+                    while True:
+                        opcion=input("A que area de analisis desea ir?:\n1:Duracion de prestamos\n2:Ranking de clientes\n3:Preferencias de rentas\n4.Volver al menu principal\n")
+                        #MENU DE REPORTES
+                        if opcion =="1":
+                            reporte_duracion_prestamos()
+                            
+                        elif opcion=="2":
+                            ranking_clientes()
+                            
+                        elif opcion=="3":
+                            while True:
+                                opcion_preferncias=input("En base a que preferencias quiere el reporte?\n1.Color\n2.Rodada\n3Volver al menu de analisis")
+                                if opcion_preferncias=="1":
+                                    preferencias_rentas_por_color()
+                                elif opcion_preferncias=="2":
+                                    preferencias_rentas_por_rodada()
+                                elif opcion_preferncias=="3":
+                                    break
+                                else:
+                                    print("Opcion no valida intente de nuevo")
+                            
+                        elif opcion=="4":
+                            break
+                        else:
+                            print("Opción no válida. Inténtalo de nuevo.")                    
+                            
                 #ESCAPE DEL SUB MENU
                 elif opcion=="3":
                     break
