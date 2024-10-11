@@ -424,10 +424,11 @@ def reportes_prestamos_retorno():
         except Exception as e:
             print("Las fecha proporcionada no coinciden con lo solicitado por favor digite la fecha MM/DD/YYYY")
     #CONVERTIR LA COLUMNA FECHA A FECHAS
-    df_db.df_prestamos["Fecha"] = df_db.df_prestamos['Fecha'].apply(lambda value: datetime.strptime(value, FORMAT_DATE))
+    df_prestamos=df_db.df_prestamos
+    df_prestamos["Fecha"] = df_prestamos['Fecha'].apply(lambda value: datetime.strptime(value, FORMAT_DATE))
     #FILTRAR LAS QUE ESTAN POR RETORNAR
-    filtro = (fecha_inicio <= df_db.df_prestamos['Fecha']) & (fecha_fin >= df_db.df_prestamos['Fecha'])
-    df_filtrado=df_db.df_prestamos[filtro] 
+    filtro = (fecha_inicio <= df_prestamos['Fecha']) & (fecha_fin >= df_prestamos['Fecha'])
+    df_filtrado=df_prestamos[filtro] 
     #QUE ESTEN EN N/E
     df_xretornar=df_filtrado[df_filtrado["Estado"]=="N/E"]
 
@@ -474,12 +475,14 @@ def reportes_prestamos_periodo():
         except Exception as e:
             print("Las fecha proporcionada no coinciden con lo solicitado por favor digite la fecha MM/DD/YYYY")
     #CONVERTIR LA COLUMNA FECHA A FECHAS
-    df_db.df_prestamos["Fecha"] = df_db.df_prestamos['Fecha'].apply(lambda value: datetime.strptime(value, FORMAT_DATE))
+    df_prestamos=df_db.df_prestamos
+    df_prestamos["Fecha"]=df_prestamos["Fecha"].astype(object)
+    df_prestamos["Fecha"] = df_prestamos['Fecha'].apply(lambda value: datetime.strptime(value, FORMAT_DATE))
     #FILTRAR LAS QUE ESTAN POR RETORNAR
-    filtro = (fecha_inicio <= df_db.df_prestamos['Fecha']) & (fecha_fin >= df_db.df_prestamos['Fecha'])
+    filtro = (fecha_inicio <= df_prestamos['Fecha']) & (fecha_fin >= df_prestamos['Fecha'])
 
 
-    df_filtrado=df_db.df_prestamos[filtro] 
+    df_filtrado=df_prestamos[filtro] 
     df_filtrado["ID_unidad"] = df_filtrado["ID_unidad"].astype(int)
     df_filtrado["ID_cliente"] = df_filtrado["ID_cliente"].astype(int)
     #HACEMOS LOS INNER JOINS
@@ -798,6 +801,7 @@ def menu():
                 if opcion =="1":
                     while True:
                         reportes_menu()
+                        df_db.actualizar()
                         sub_opcion = input("Bienvendio al menu de reportes selecciona una opción: ")
                         if sub_opcion == '1':
                             reportes_clientes()
