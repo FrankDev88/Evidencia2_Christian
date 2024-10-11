@@ -321,6 +321,9 @@ def registro_unidad():
 def retorno():
     #Cargamos nuestros datos en un df para tener un mejor manejo de nuestros datos
     #Prestamos por retornar
+    if vacio_prestamo() or vacio_cliente():
+        print("ACTUALMENTE NO HAY SUFICIENTES DATOS PARA REALIZAR ESTA ACCION")
+        return 0
     df_prestamos=df_db.df_prestamos
     pxretornar=df_prestamos[df_prestamos["Estado"]=="N/E"]
 
@@ -387,6 +390,9 @@ def exportardf(df,nombre_exportacion):
 
 def reportes_clientes():
     print("\n--- Reporte de Clientes ---")
+    if vacio_cliente():
+        print("ACTUALMENTE NO HAY SUFICIENTES DATOS PARA REALIZAR ESTA ACCION")
+        return 0
     #RECORREMOS TODA LA BASE DE DATOS EN LA TABLA CLIENTES PARA MOSTRAR ABSOLUTAMENTE TODOS LOS CLIENTES 
     todos_clientes=df_db.df_cliente
     print(todos_clientes)
@@ -395,6 +401,9 @@ def reportes_clientes():
 
 def reportes_prestamos_retorno():
     print("\n--- Reporte de Préstamos por Retornar ---")
+    if vacio_prestamo() or vacio_cliente() or vacio_unidad():
+        print("ACTUALMENTE NO HAY SUFICIENTES DATOS PARA REALIZAR ESTA ACCION")
+        return 0
     while True:
         #VERIFICAR QUE LAS FECHAS SON CORRECTAS
         try:
@@ -437,6 +446,11 @@ def reportes_prestamos_retorno():
 
 def reportes_prestamos_periodo():
     print("\n--- Reporte de Préstamos por Periodo ---")
+
+    if vacio_prestamo() or vacio_cliente() or vacio_unidad():
+            print("ACTUALMENTE NO HAY SUFICIENTES DATOS PARA REALIZAR ESTA ACCION")
+            return 0
+    
     while True:
         #VERIFICAR QUE LAS FECHAS SON CORRECTAS 
         try:
@@ -505,11 +519,25 @@ def reportes_menu():
     print("5. Retrasos")
     print("6. Listado de unidades")
 
+def vacio_cliente():
+    if not(len(base_de_datos["cliente"])==0):
+        return False
+    return True
+def vacio_prestamo():
+    if not(len(base_de_datos["prestamo"])==0):
+        return False
+    return True
+def vacio_unidad():
+    if not(len(base_de_datos["unidad"])==0):
+        return False
+    return True
 
 
 def listado_unidades_completo():
     print("\n--- Listado de Unidades Completo ---")
-
+    if vacio_unidad():
+        print("ACTUALMENTE NO HAY SUFICIENTES DATOS PARA REALIZAR ESTA ACCION")
+        return 0
     # Mostrar todas las unidades con sus atributos
     df_reporte = df_db.df_unidad
     print(df_reporte)
@@ -520,7 +548,9 @@ def listado_unidades_completo():
 
 def listado_unidades_por_rodada():
     print("\n--- Listado de Unidades por Rodada ---")
-
+    if vacio_unidad():
+        print("ACTUALMENTE NO HAY SUFICIENTES DATOS PARA REALIZAR ESTA ACCION")
+        return 0
     while True:
         try:
             # Solicitar la rodada al usuario
@@ -543,7 +573,9 @@ def listado_unidades_por_rodada():
 
 def listado_unidades_por_color():
     print("\n--- Listado de Unidades por Color ---")
-
+    if vacio_unidad():
+        print("ACTUALMENTE NO HAY SUFICIENTES DATOS PARA REALIZAR ESTA ACCION")
+        return 0
     while True:
         try:
             # Solicitar el color al usuario
@@ -566,7 +598,9 @@ def listado_unidades_por_color():
 
 def reporte_retrasos():
     print("\n--- Reporte de Retrasos ---")
-
+    if vacio_prestamo() or vacio_cliente() or vacio_unidad():
+        print("ACTUALMENTE NO HAY SUFICIENTES DATOS PARA REALIZAR ESTA ACCION")
+        return 0
     # Actualizar el DataFrame
     df_prestamos=df_db.df_prestamos
 
@@ -619,6 +653,9 @@ def reporte_retrasos():
 def reporte_duracion_prestamos():
     print("\n--- Reporte de Duración de Préstamos ---")
     # Verifica que los días registrados sean de tipo numérico
+    if vacio_prestamo():
+        print("ACTUALMENTE NO HAY SUFICIENTES DATOS PARA REALIZAR ESTA ACCION")
+        return 0
     df_prestamos = df_db.df_prestamos
     df_prestamos["Dias C"] = pd.to_numeric(df_prestamos["Dias C"], errors='coerce')
     
@@ -653,6 +690,9 @@ def reporte_duracion_prestamos():
 
 def ranking_clientes():
     print("\n--- Ranking de Clientes ---")
+    if vacio_prestamo() or vacio_cliente():
+        print("ACTUALMENTE NO HAY SUFICIENTES DATOS PARA REALIZAR ESTA ACCION")
+        return 0
     # Agrupar por ID de cliente y contar los préstamos
     ranking = df_db.df_prestamos.groupby("ID_cliente").size().reset_index(name="Cantidad de Préstamos")
     
@@ -675,7 +715,14 @@ def ranking_clientes():
 def preferencias_rentas_por_rodada():
     print("\n--- Preferencias de Rentas por Rodada ---")
     # Agrupar por rodada y contar la cantidad de préstamos
-    preferencias_rodada = df_db.df_prestamos.groupby("Rodada").size().reset_index(name="Cantidad de Préstamos")
+    if vacio_prestamo():
+        print("ACTUALMENTE NO HAY SUFICIENTES DATOS PARA REALIZAR ESTA ACCION")
+        return 0
+    df_prestamos=df_db.df_prestamos
+    df_unidad=df_db.df_unidad
+    df_prestamos["ID_unidad"] = df_prestamos["ID_unidad"].astype(int)
+    df_unido = pd.merge(df_prestamos, df_unidad, left_on="ID_unidad", right_index=True)
+    preferencias_rodada = df_unido.groupby("Rodada").size().reset_index(name="Cantidad de Préstamos")
     
     # Ordenar de manera descendente por la cantidad de préstamos
     preferencias_rodada = preferencias_rodada.sort_values(by="Cantidad de Préstamos", ascending=False)
@@ -687,7 +734,16 @@ def preferencias_rentas_por_rodada():
 def preferencias_rentas_por_color():
     print("\n--- Preferencias de Rentas por Color ---")
     # Agrupar por color y contar la cantidad de préstamos
-    preferencias_color = df_db.df_prestamos.groupby("Color").size().reset_index(name="Cantidad de Préstamos")
+    if vacio_prestamo() or vacio_unidad():
+        print("ACTUALMENTE NO HAY SUFICIENTES DATOS PARA REALIZAR ESTA ACCION")
+        return 0
+    df_prestamos=df_db.df_prestamos
+    df_unidad=df_db.df_unidad
+    df_prestamos["ID_unidad"] = df_prestamos["ID_unidad"].astype(int)
+    
+
+    df_unido = pd.merge(df_prestamos, df_unidad, left_on="ID_unidad", right_index=True)
+    preferencias_color = df_unido.groupby("Color").size().reset_index(name="Cantidad de Préstamos")
     
     # Ordenar de manera descendente por la cantidad de préstamos
     preferencias_color = preferencias_color.sort_values(by="Cantidad de Préstamos", ascending=False)
