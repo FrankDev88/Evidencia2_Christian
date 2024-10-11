@@ -71,24 +71,32 @@ try:
 except Exception as e:
     print(f"Error al leer prestamo.csv: {e}")
 
-
 #CREAMOS UNA CLASE PARA MANEJAR NUESTROS DATAFRAMES
 class Dataframes:
-    df_unidad= pd.DataFrame(base_de_datos["unidad"]).T
-    df_cliente= pd.DataFrame(base_de_datos["cliente"]).T
-    df_prestamos= pd.DataFrame(base_de_datos["prestamo"]).T
-    df_unidad.columns=["Rodada","Color","Prestado"] 
-    df_cliente.columns=["Apellido","Nombre","Telefono"] 
-    df_prestamos.columns=["ID_cliente","ID_unidad","Fecha","Dias C","Estado"] 
+    def __init__(self):
+    
+        self.df_unidad= pd.DataFrame(base_de_datos["unidad"]).T
+        self.df_cliente= pd.DataFrame(base_de_datos["cliente"]).T
+        self.df_prestamos= pd.DataFrame(base_de_datos["prestamo"]).T
+        if not(len(base_de_datos["cliente"])==0):
+            self.df_cliente.columns=["Apellido","Nombre","Telefono"] 
+        if not(len(base_de_datos["prestamo"])==0):
+            self.df_prestamos.columns=["ID_cliente","ID_unidad","Fecha","Dias C","Estado"] 
+        if not(len(base_de_datos["unidad"])==0):
+            self.df_unidad.columns=["Rodada","Color","Prestado"]
+
 
 
     def actualizar(self):
         self.df_unidad= pd.DataFrame(base_de_datos["unidad"]).T
         self.df_cliente= pd.DataFrame(base_de_datos["cliente"]).T
         self.df_prestamos= pd.DataFrame(base_de_datos["prestamo"]).T 
-        self.df_unidad.columns=["Rodada","Color","Prestado"] 
-        self.df_cliente.columns=["Apellido","Nombre","Telefono"] 
-        self.df_prestamos.columns=["ID_cliente","ID_unidad","Fecha","Dias C","Estado"] 
+        if not(len(base_de_datos["cliente"])==0):
+            self.df_cliente.columns=["Apellido","Nombre","Telefono"] 
+        if not(len(base_de_datos["prestamo"])==0):
+            self.df_prestamos.columns=["ID_cliente","ID_unidad","Fecha","Dias C","Estado"] 
+        if not(len(base_de_datos["unidad"])==0):
+            self.df_unidad.columns=["Rodada","Color","Prestado"]
 
 #instanciamos la clase data frames para manejar la bd como un data frame
 
